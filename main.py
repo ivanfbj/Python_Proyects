@@ -1,32 +1,47 @@
 """
 source:
-https://youtu.be/8ext9G7xspg?t=1274
-https://youtu.be/8ext9G7xspg?t=1274
-The objective of this project is to develop a software for play Rock Paper and scissors, user versus computer.
+https://youtu.be/8ext9G7xspg?t=1465
+The objective of this project is to develop a software for play to Hangman.
 """
 import random
+from words import words
+import string
 
 
-def is_win(player, opponent):
-    # Return true if player wins
-    # r > s, s > p, p > r
-    if (player == 'r' and opponent == 's') or (player == 's' and opponent == 'p') \
-            or (player == 'p' and opponent == 'r'):
-        return True
+def get_valid_word(words):
+    word = random.choice(words)  # randomly chooses something from the list
+    while '-' in word or ' ' in word:
+        word = random.choice(words)
+    return word
 
 
-def play():
-    user = input("What's your choice? 'r' for rock, 'p' for paper, 's' for scissors\n")
-    computer = random.choice(['r', 'p', 's'])
+def hangman():
+    word = get_valid_word(words).upper()
+    word_letters = set(word)  # letters in the word
+    alphabet = set(string.ascii_uppercase)
+    used_letters = set()  # what the user has guessed
 
-    if user == computer:
-        return 'It\'s a tie'
-    # r > s, s > p, p > r
-    if is_win(user, computer):
-        return 'You won!'
-    else:
-        return 'You lost!'
+    # getting user input
+    while len(word_letters) > 0:
+        # letters used
+        # ' '.join(['a', 'b', 'cd']) --> 'a b cd'
+        print('You have used theses letters: ', ' '.join(used_letters))
+
+        # what current word is (ie W - R D)
+        word_list = [letter if letter in used_letters else '-' for letter in word]
+        print('Current word: ', ' '.join(word_list))
+
+        user_letter = input('Guess a letter: ').upper()
+        if user_letter in alphabet - used_letters:
+            used_letters.add(user_letter)
+            if user_letter in word_letters:
+                word_letters.remove(user_letter)
+
+        elif user_letter in used_letters:
+            print('You have already used that character. Please try again.')
+        else:
+            print('Invalid character. Please try again.')
 
 
 if __name__ == "__main__":
-    print(play())
+    hangman()
